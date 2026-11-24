@@ -1,0 +1,502 @@
+@import "tailwindcss";
+
+/* ── Tokens ───────────────────────────────────────────── */
+:root,
+:root[data-theme="day"] {
+  --vellum: #e6d7ae;
+  --vellum-deep: #d9c693;
+  --vellum-light: #efe4c4;
+  --ink: #2a2016;
+  --ink-soft: #594a34;
+  --moss: #3f5e27;
+  --moss-light: #6d8f45;
+  --gold: #c9952f;
+  --door: #a3322a;
+  --river: #4f7e8c;
+  --on-moss: #f3ead0;
+  --wash-a: rgba(109, 143, 69, 0.14);
+  --wash-b: rgba(79, 126, 140, 0.12);
+  --wash-c: rgba(201, 149, 47, 0.12);
+  color-scheme: light;
+}
+
+:root[data-theme="night"] {
+  --vellum: #15283a;
+  --vellum-deep: #1c3450;
+  --vellum-light: #223d5c;
+  --ink: #e9e2c9;
+  --ink-soft: #b8b196;
+  --moss: #a6c983;
+  --moss-light: #7fa35b;
+  --gold: #e6bd5c;
+  --door: #f2948a;
+  --river: #8fbccb;
+  --on-moss: #12202e;
+  --wash-a: rgba(143, 188, 203, 0.1);
+  --wash-b: rgba(230, 189, 92, 0.06);
+  --wash-c: rgba(166, 201, 131, 0.07);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-vellum: var(--vellum);
+  --color-vellum-deep: var(--vellum-deep);
+  --color-vellum-light: var(--vellum-light);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-moss: var(--moss);
+  --color-moss-light: var(--moss-light);
+  --color-gold: var(--gold);
+  --color-door: var(--door);
+  --color-river: var(--river);
+  --color-on-moss: var(--on-moss);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-ascii: var(--font-ascii);
+}
+
+/* ── Base ─────────────────────────────────────────────── */
+html {
+  background: var(--vellum);
+}
+
+body {
+  background-color: var(--vellum);
+  background-image:
+    radial-gradient(ellipse 60% 40% at 12% 18%, var(--wash-a), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 88% 70%, var(--wash-b), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 60% 8%, var(--wash-c), transparent 70%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font-body), Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  transition: background-color 600ms ease, color 600ms ease;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), serif;
+  font-weight: 400;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+:focus-visible {
+  outline: 3px dashed var(--gold);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+@layer components {
+/* ── Hand-drawn primitives ────────────────────────────── */
+.sketch {
+  border: 1.5px solid var(--ink);
+  border-radius: 255px 12px 225px 14px / 14px 225px 12px 255px;
+}
+
+.sketch-alt {
+  border: 1.5px solid var(--ink);
+  border-radius: 14px 225px 12px 255px / 255px 12px 225px 14px;
+}
+
+.paper {
+  background-color: var(--vellum-light);
+  background-image: radial-gradient(ellipse at 30% 20%, var(--wash-c), transparent 60%);
+  box-shadow:
+    2px 3px 0 var(--ink),
+    0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent) inset;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.4rem 1.1rem;
+  font-family: var(--font-body), serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--vellum-light);
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, background-color 200ms ease;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 0 0 0 var(--ink);
+}
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn-moss {
+  background: var(--moss);
+  color: var(--on-moss);
+}
+.btn-door {
+  background: var(--door);
+  color: var(--on-moss);
+}
+:root[data-theme="night"] .btn-door {
+  color: #2a1210;
+}
+
+.ascii {
+  font-family: var(--font-ascii), "Courier New", monospace;
+  white-space: pre;
+  line-height: 1.15;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+}
+
+.ribbon {
+  position: relative;
+  display: inline-block;
+  padding: 0.35rem 1.6rem;
+  background: var(--vellum-light);
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  font-family: var(--font-display), serif;
+}
+.ribbon::before,
+.ribbon::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  width: 18px;
+  height: calc(100% + 1px);
+  background: var(--vellum-deep);
+  border: 1.5px solid var(--ink);
+  z-index: -1;
+}
+.ribbon::before {
+  left: -12px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 40% 50%);
+}
+.ribbon::after {
+  right: -12px;
+  clip-path: polygon(0 0, 100% 0, 60% 50%, 100% 100%, 0 100%);
+}
+
+/* tabbed index-card folder (from the moodboard's filed archive cards) */
+.folder-tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding-left: 1.25rem;
+  overflow-x: auto;
+}
+.folder-tab {
+  min-height: 44px;
+  padding: 0.5rem 1.1rem 0.35rem;
+  border: 1.5px solid var(--ink);
+  border-bottom: none;
+  border-radius: 14px 14px 0 0;
+  background: var(--vellum-deep);
+  color: var(--ink-soft);
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  top: 1.5px;
+}
+.folder-tab[aria-selected="true"] {
+  background: var(--vellum-light);
+  color: var(--ink);
+  z-index: 1;
+}
+.folder-body {
+  border: 1.5px solid var(--ink);
+  background: var(--vellum-light);
+  border-radius: 4px 18px 18px 18px;
+}
+
+.field {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  background: var(--vellum);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  border-radius: 10px 4px 12px 5px;
+  font-family: var(--font-body), serif;
+  font-size: 1rem;
+}
+.field::placeholder {
+  color: color-mix(in srgb, var(--ink-soft) 75%, transparent);
+}
+.label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.hint {
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 36px;
+  padding: 0.15rem 0.75rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: var(--vellum);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.chip[aria-pressed="true"] {
+  background: var(--moss);
+  color: var(--on-moss);
+}
+
+.dotted-rule {
+  border: none;
+  border-top: 2px dotted color-mix(in srgb, var(--ink) 45%, transparent);
+}
+
+}
+
+/* ── Map ──────────────────────────────────────────────── */
+.realm-map {
+  position: relative;
+  background: var(--vellum);
+}
+.realm-map .leaflet-container {
+  background: var(--vellum);
+  font-family: var(--font-body), serif;
+}
+.realm-map .leaflet-tile-pane {
+  filter: sepia(0.8) saturate(0.75) hue-rotate(-10deg) brightness(0.98) contrast(0.92);
+  transition: filter 800ms ease;
+}
+:root[data-theme="night"] .realm-map .leaflet-tile-pane {
+  filter: invert(0.92) hue-rotate(190deg) sepia(0.25) saturate(0.7) brightness(0.8) contrast(0.95);
+}
+/* inked vignette, like the burnt edge of an old atlas */
+.realm-map::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 450;
+  box-shadow:
+    inset 0 0 0 2px var(--ink),
+    inset 0 0 60px 14px color-mix(in srgb, var(--gold) 45%, transparent),
+    inset 0 0 140px 30px color-mix(in srgb, var(--ink) 25%, transparent);
+}
+:root[data-theme="night"] .realm-map::after {
+  box-shadow:
+    inset 0 0 0 2px var(--ink),
+    inset 0 0 80px 20px rgba(8, 16, 28, 0.85);
+}
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--vellum-light) 85%, transparent) !important;
+  color: var(--ink-soft) !important;
+  font-size: 0.7rem;
+}
+.leaflet-control-attribution a {
+  color: var(--ink) !important;
+}
+.leaflet-bar a {
+  background: var(--vellum-light) !important;
+  color: var(--ink) !important;
+  border-color: var(--ink) !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 34px !important;
+}
+
+/* pins */
+.pin-wrap {
+  background: none;
+  border: none;
+}
+.pin {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50% 50% 50% 4px;
+  transform: rotate(-45deg);
+  background: var(--vellum-light);
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  animation: puff-in 520ms cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.pin > span {
+  transform: rotate(45deg);
+  font-family: var(--font-ascii), monospace;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--ink);
+  line-height: 1;
+}
+.pin[data-trust="sworn"] {
+  background: var(--moss);
+}
+.pin[data-trust="sworn"] > span {
+  color: var(--on-moss);
+}
+.pin[data-trust="beware"] {
+  background: var(--door);
+}
+.pin[data-trust="beware"] > span {
+  color: var(--on-moss);
+}
+.pin.is-chosen {
+  outline: 4px dashed var(--gold);
+  outline-offset: 4px;
+}
+.pin-new {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px dashed var(--door);
+  background: color-mix(in srgb, var(--door) 25%, transparent);
+}
+
+@keyframes puff-in {
+  0% {
+    opacity: 0;
+    transform: rotate(-45deg) scale(0.2);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: rotate(-45deg) scale(1);
+  }
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--vellum-light);
+  color: var(--ink);
+  border: 1.5px solid var(--ink);
+  border-radius: 6px 22px 6px 22px;
+  box-shadow: 3px 3px 0 var(--ink);
+}
+.leaflet-popup-tip {
+  background: var(--vellum-light);
+  border: 1.5px solid var(--ink);
+}
+.leaflet-popup-content {
+  margin: 14px 16px;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--ink);
+  width: 32px;
+  height: 32px;
+  font-size: 22px;
+}
+
+/* ── Whimsy ───────────────────────────────────────────── */
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+.wobble {
+  animation: wobble 5.5s ease-in-out infinite;
+}
+
+@keyframes drift {
+  0% {
+    transform: translateX(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateX(-46vw) rotate(2deg);
+  }
+  100% {
+    transform: translateX(0) rotate(-2deg);
+  }
+}
+@keyframes bob {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 4px;
+  }
+}
+.ship {
+  animation: drift 90s ease-in-out infinite;
+}
+.ship > pre {
+  animation: bob 3.2s ease-in-out infinite;
+}
+
+@keyframes firefly {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  30% {
+    opacity: 1;
+  }
+  50% {
+    transform: translate(var(--fx), var(--fy));
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0;
+  }
+}
+.firefly {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #f6e27a;
+  box-shadow: 0 0 10px 3px rgba(246, 226, 122, 0.7);
+  animation: firefly var(--dur) ease-in-out infinite;
+  animation-delay: var(--delay);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .ship,
+  .firefly {
+    display: none;
+  }
+}

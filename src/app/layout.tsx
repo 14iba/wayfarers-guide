@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Alegreya, Courier_Prime, Uncial_Antiqua } from "next/font/google";
 import "leaflet/dist/leaflet.css";
+import "react-leaflet-cluster/dist/assets/MarkerCluster.css";
 import "./globals.css";
 import { AppRoot } from "@/components/AppRoot";
 

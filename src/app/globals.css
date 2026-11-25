@@ -371,6 +371,48 @@ p {
   outline: 4px dashed var(--gold);
   outline-offset: 4px;
 }
+/* clusters: an inked wax-seal tally */
+.cluster {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--vellum-light);
+  border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink), inset 0 0 0 3px var(--vellum-light), inset 0 0 0 4.5px var(--ink);
+  cursor: pointer;
+  transition: transform 160ms ease-out;
+}
+.cluster:hover {
+  transform: scale(1.08);
+}
+.cluster > span {
+  font-family: var(--font-display), serif;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--ink);
+}
+.cluster[data-tier="m"] {
+  background: var(--gold);
+}
+.cluster[data-tier="m"] > span {
+  color: #2a2016; /* dark ink on gold in both day and night */
+  font-size: 1.05rem;
+}
+.cluster[data-tier="l"] {
+  background: var(--moss);
+}
+.cluster[data-tier="l"] > span {
+  color: var(--on-moss);
+  font-size: 1.15rem;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cluster {
+    transition: none;
+  }
+}
+
 .pin-new {
   width: 32px;
   height: 32px;

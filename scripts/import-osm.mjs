@@ -99,8 +99,11 @@ async function overpass(q) {
         headers: { "User-Agent": USER_AGENT, "Content-Type": "application/x-www-form-urlencoded" },
         body: "data=" + encodeURIComponent(q),
       });
-      if (res.ok) return (await res.json()).elements ?? [];
-      if (![429, 502, 503, 504].includes(res.status)) throw new Error(`Overpass replied ${res.status}`);
+      if (res.ok) {
+        const json = await res.json();
+        // A timed-out query still replies 200, with an error remark and no elements: retry it.
+        if (!/error|timed out|out of memory/i.test(json.remark ?? "")) return json.elements ?? [];
+      } else if (![429, 502, 503, 504].includes(res.status)) throw new Error(`Overpass replied ${res.status}`);
     } catch (e) {
       if (attempt === 3) throw e;
     }

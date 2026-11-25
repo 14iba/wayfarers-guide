@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import Link from "next/link";
 import L from "leaflet";
 import { MapContainer, Marker, Popup, TileLayer, ZoomControl, useMap, useMapEvents } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import type { Place, QuestLog } from "@/lib/types";
 import { KINDS } from "@/lib/lore";
 import { avgStars, placeTrust } from "@/lib/geo";
@@ -16,6 +17,19 @@ function pinIcon(place: Place, chosen: boolean) {
     iconSize: [40, 40],
     iconAnchor: [4, 40],
     popupAnchor: [16, -38],
+  });
+}
+
+/** A wax-seal tally for a crowd of nearby pins; grows with the count. */
+function clusterIcon(cluster: { getChildCount(): number }) {
+  const n = cluster.getChildCount();
+  const tier = n < 10 ? "s" : n < 100 ? "m" : "l";
+  const size = { s: 38, m: 46, l: 56 }[tier];
+  return L.divIcon({
+    className: "pin-wrap",
+    html: `<div class="cluster" data-tier="${tier}"><span>${n}</span></div>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
   });
 }
 
@@ -58,19 +72,21 @@ export interface RealmMapProps {
 }
 
 export default function RealmMap({ places, logs, center, zoom, flyTo, chosenId, onMove, onPick, picked, className, label }: RealmMapProps) {
-  const markers = useMemo(
-    () =>
-      places.map((p) => (
-        <Marker key={p.id} position={[p.lat, p.lng]} icon={pinIcon(p, p.id === chosenId)} title={p.name} alt={p.name}>
-          {!onPick && (
-            <Popup>
-              <ScrollCard place={p} logs={logs} />
-            </Popup>
-          )}
-        </Marker>
-      )),
-    [places, logs, chosenId, onPick],
+  const marker = useCallback(
+    (p: Place) => (
+      <Marker key={p.id} position={[p.lat, p.lng]} icon={pinIcon(p, p.id === chosenId)} title={p.name} alt={p.name}>
+        {!onPick && (
+          <Popup>
+            <ScrollCard place={p} logs={logs} />
+          </Popup>
+        )}
+      </Marker>
+    ),
+    [logs, chosenId, onPick],
   );
+  const markers = useMemo(() => places.filter((p) => p.id !== chosenId).map(marker), [places, chosenId, marker]);
+  // The rolled pick sits outside the clusters so it is always visible.
+  const chosen = places.find((p) => p.id === chosenId);
 
   return (
     <div className={`realm-map ${className ?? ""}`} role="region" aria-label={label}>
@@ -82,7 +98,17 @@ export default function RealmMap({ places, logs, center, zoom, flyTo, chosenId, 
         />
         <Watch onMove={onMove} onPick={onPick} />
         <FlyTo to={flyTo ?? null} />
-        {markers}
+        <MarkerClusterGroup
+          iconCreateFunction={clusterIcon}
+          maxClusterRadius={48}
+          disableClusteringAtZoom={16}
+          showCoverageOnHover={false}
+          spiderfyOnMaxZoom
+          chunkedLoading
+        >
+          {markers}
+        </MarkerClusterGroup>
+        {chosen && marker(chosen)}
         {picked && <Marker position={picked} icon={newPin} title="Your new flag" alt="Your new flag" />}
       </MapContainer>
     </div>
